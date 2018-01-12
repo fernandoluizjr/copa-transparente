@@ -69,8 +69,13 @@ def dec(element, index):
 
 with open('data/data/ExecucaoFinanceira.csv', 'r') as data:
     info = [line.strip().split(';') for line in data] # monta uma lista de registros. cada um eh uma lista de campos splitados
-    total = sum([dec(element, 5) for element in info]) # monta outra lista soh com o campo 5 e passa pro sum()
+    values = [dec(element, 5) for element in info] # monta uma lista soh de campos 5
+    total = sum(values) # passa pro sum()
+    values_100M = filter(lambda x: x > Decimal('100000000'), values) # predicate dos campos 5 maiores q 100M
+    total_gt_100M = sum(values_100M)
 # end with: at this point on the file will be closed.
+
+percent = lambda x, y: (x/y) * Decimal('100') # o lambda deixa de ser anonimo e passa a vira um funcao normal percent()
 
 with open('data/data/ExecucaoFinanceira.csv', 'r') as data:
     for line in data:
@@ -111,6 +116,8 @@ for lower, companies in intervals: # varre as empresas e joga nos sets especific
 print("Total gasto: {}".format(total))
 print("Total gasto com assinaturas entre {} e {} : {}".format(start_date, end_date, total_por_data))
 print("Total gasto com contrados de menos de 11 dias {}".format(total_por_vigencia))
+print("Apenas contratos com mais de 100MI: {}".format(total_gt_100M))
+print("Representam {:.2f}% do total".format(percent(total_gt_100M, total)))
 
 for year, signed in totais_agrupados_por_ano.items():
     print("{} execuções assinadas em {}".format(signed, year))
