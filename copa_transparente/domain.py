@@ -64,6 +64,27 @@ class DataTable:
     # encapsulamento pythonico vc pode chamar a funcao, atribuir com = x, e chamar del atributo
     name = property(_get_name, _set_name, _del_name)
 
+    """
+        equals method
+        
+        metodos de comparacao no python sao:
+        object.__lt__(self, other) | x < y
+        object.__le__(self, other) | x <= y
+        object.__ne__(self, other) | x != y
+        object.__gt__(self, other) | x > y
+        object.__ge__(self, other) | x >= y
+    """
+    def __eq__(self, other):
+        return self.name == other.name
+
+    """
+        o metodo str() apenas altera a saida no print()
+        enquanto o repr() altera pra tudo
+    """
+    def __repr__(self):
+        return "Tabela {}".format(self._name)
+
+
 class Relationship:
     """Classe que representa um relacionamento entre DataTables
     Essa classe tem todas as informações que identificam um
