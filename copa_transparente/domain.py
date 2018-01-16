@@ -13,14 +13,18 @@ class DataTable:
         columns: [Lista de colunas]
         data: [Lista de dados]
     """
-    def __init__(self, name):
+    def __init__(self, name, filename = ""):
         """Construtor
             Args:
             name: Nome da Tabela
         """
         self._name = name
         self._columns = []
-        self._data = []
+        if filename:
+            with open(filename) as data:
+                self._data = data.readlines()
+        else:
+            self._data = []
         self._references = [] # tabelas q essa tabela aponta
         self._referenced = [] # tabelas q apontam para essa tabela
 
@@ -65,6 +69,12 @@ class DataTable:
     name = property(_get_name, _set_name, _del_name)
 
     """
+        definicao do protocolo de sized container
+    """
+    def __len__(self):
+        return len(self._data)
+
+    """
         equals method
         
         metodos de comparacao no python sao:
@@ -83,6 +93,29 @@ class DataTable:
     """
     def __repr__(self):
         return "Tabela {}".format(self._name)
+
+
+"""
+    classe pra demonstrar a implementacao do protocolo iterator
+    e do protocolo numerico pra sobrescrever o operador <<
+    e poder executar assim: for line in select << table:
+"""
+class Select:
+	def __init__(self):
+		self._c = 0
+	def __lshift__(self, table):
+		self.table = table
+		return self
+	def __iter__(self):
+		return self
+	def __next__(self):
+		try:
+			element = self.table._data[self._c]
+		except IndexError as ie:
+			self._c = 0
+			raise StopIteration
+		self._c += 1
+		return element
 
 
 class Relationship:
